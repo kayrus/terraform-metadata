@@ -18,17 +18,17 @@ out="$CUR/schemas"
 mkdir -p "$out"
 rm -f "$CUR/failure.txt"
 
-mkdir -p "$GOPATH/src/github.com/terraform-providers"
+mkdir -p "$GOPATH/src/github.com/sapcc"
 
 update_or_clone() {
   name="$1"
-  location="$GOPATH/src/github.com/terraform-providers/$name"
+  location="$GOPATH/src/github.com/sapcc/$name"
   if [[ -d "$location" ]]; then
     echo "Updating $name"
     git -C "$location" pull >/dev/null 2>&1 || echo "ERROR: Failed to update '$name'"
   else
     echo "Cloning $name"
-    git clone --quiet "https://github.com/terraform-providers/$name.git" "$location" >/dev/null 2>&1
+    git clone --quiet "https://github.com/sapcc/$name.git" "$location" >/dev/null 2>&1
   fi
 }
 
@@ -38,7 +38,7 @@ if [[ -z "${SKIP_UPDATE:-}" ]]; then
   done < <(grep '^terraform-provider-' <"$CUR/providers.list.full")
 fi
 
-pushd "$GOPATH/src/github.com/terraform-providers" >/dev/null
+pushd "$GOPATH/src/github.com/sapcc" >/dev/null
 
 sleep 1 # fix logs
 echo
@@ -55,7 +55,7 @@ generate_one() {
 
 process_repository() {
   full_name="$1"
-  location="$GOPATH/src/github.com/terraform-providers/$full_name"
+  location="$GOPATH/src/github.com/sapcc/$full_name"
   name="${full_name#terraform-provider-}"
   pkg_name="$name"
   provider_args=""
@@ -123,6 +123,7 @@ process_repository() {
   fi
 
   cat >'go.mod' <<'EOF'
+require github.com/sapcc/kubernikus master
 replace github.com/go-critic/go-critic v0.0.0-20181204210945-1df300866540 => github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540
 replace github.com/golangci/errcheck v0.0.0-20181003203344-ef45e06d44b6 => github.com/golangci/errcheck v0.0.0-20181223084120-ef45e06d44b6
 replace github.com/golangci/go-tools v0.0.0-20180109140146-af6baa5dc196 => github.com/golangci/go-tools v0.0.0-20190318060251-af6baa5dc196

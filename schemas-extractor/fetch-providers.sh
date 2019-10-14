@@ -7,7 +7,7 @@ pushd "$(dirname "$0")" >/dev/null
 
 get_pages() {
   local idx=1
-  while curl -s "https://api.github.com/orgs/terraform-providers/repos?sort=full_name&per_page=100&page=${idx}" | jq -re '.[].name'; do
+  while curl -s "https://api.github.com/orgs/sapcc/repos?sort=full_name&per_page=100&page=${idx}" | jq -re '.[].name'; do
     idx=$((idx + 1))
   done
 }
